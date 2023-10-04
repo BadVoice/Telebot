@@ -55,8 +55,9 @@ async def ics_count_chosen(message: Message, state: FSMContext):
     user_data = await state.get_data()
     await message.answer(
         text=f"Ваш заказ:   \n\n"
-        f"Название: {message.text.lower()} \n\n"
-        f"Количество: {user_data['chosen_ics']}",
+        f"Название: {user_data['chosen_ics']} \n"
+        f"Количество: {message.text.lower()}",
+
         reply_markup=ReplyKeyboardRemove()
     )
     print(user_data)
