@@ -6,9 +6,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 
 from keyboards.simple_row import make_row_keyboard
 
-
 router = Router()
-
 
 available_ics_names = ['CPU', 'Chips', 'Cards']
 available_ics_counts = ['10 шт', '100 шт', '1000 шт']
@@ -30,7 +28,7 @@ async def cmd_ics(message: Message, state: FSMContext):
 
 @router.message(
     OrderIcs.choosing_ics_names,
-    F.text.in_(available_ics_names)
+    F.text.in_(available_ics_names),
 )
 async def ics_chosen(message: Message, state: FSMContext):
     await state.update_data(chosen_ics=message.text.lower())
@@ -45,7 +43,7 @@ async def ics_chosen(message: Message, state: FSMContext):
 async def ics_chosen_incorrectly(message: Message):
     await message.answer(
         text="Извините, мы не знаем такого товара.\n\n"
-            "Пожалуйста, выберите одно из названий из списка ниже:",
+            "Пожалуйста, выберите одно из названий из списка ниже: ",
         reply_markup=make_row_keyboard(available_ics_names)
     )
 
@@ -54,12 +52,11 @@ async def ics_chosen_incorrectly(message: Message):
 async def ics_count_chosen(message: Message, state: FSMContext):
     user_data = await state.get_data()
     await message.answer(
-        text=f"Ваш заказ:   \n\n"
+        text=f"{message.from_user.first_name:}, это ваш заказ:   \n\n"
         f"Название: {user_data['chosen_ics']} \n"
         f"Количество: {message.text.lower()}",
-
         reply_markup=ReplyKeyboardRemove()
-    )
+        )
     print(user_data)
     await state.clear()
 
